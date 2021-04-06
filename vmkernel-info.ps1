@@ -26,7 +26,6 @@ foreach ($cluster in $clusters)
         foreach ($switch in $vds) {
             $vdportgroup = $vds | Get-VDPortgroup 
             $teamingpolicy = $vdportgroup | Get-VDUplinkTeamingPolicy
-            #$vmkernelInfo.add($cluster.name, $esxihost.Name, $vds.Name, $vdportgroup.Name, $teamingpolicy.LoadBalancingPolicy, $teamingpolicy.ActiveUplinkPort)
 
             foreach ($policy in $teamingpolicy)
             {
@@ -36,13 +35,14 @@ foreach ($cluster in $clusters)
                 $temp | Add-Member -MemberType NoteProperty -Name "Cluster" -Value $cluster.Name
                 $temp | Add-Member -MemberType NoteProperty -Name "Host" -Value $esxihost.Name
                 $temp | Add-Member -MemberType NoteProperty -Name "Virtual Switch" -Value $vds.Name
+                $temp | Add-Member -MemberType NoteProperty -Name "Teaming Policy - PortGroup Name" -Value $policy.VDPortgroup.Name
                 $temp | Add-Member -MemberType NoteProperty -Name "Teaming Policy - Load Balancing" -Value $policy.LoadBalancingPolicy
                 $temp | Add-Member -MemberType NoteProperty -Name "Teaming Policy - Active Uplink Ports" -Value $policy.ActiveUplinkPort
 
                 $vmkernelInfo.Add($temp) | Out-Null
             }##end foreach teaming policy enumeration
         }##end foreach distributed virtual switches
-        
+
         #Process standard virtual switches
         foreach($virtswitch in $virtualswitches)
         {
@@ -57,6 +57,7 @@ foreach ($cluster in $clusters)
                     $temp | Add-Member -MemberType NoteProperty -Name "Cluster" -Value $cluster.Name
                     $temp | Add-Member -MemberType NoteProperty -Name "Host" -Value $esxihost.Name
                     $temp | Add-Member -MemberType NoteProperty -Name "Virtual Switch" -Value $virtswitch.Name
+                    $temp | Add-Member -MemberType NoteProperty -Name "Teaming Policy - PortGroup Name" -Value $pol.VirtualPortGroup.Name
                     $temp | Add-Member -MemberType NoteProperty -Name "Teaming Policy - Load Balancing" -Value $pol.LoadBalancingPolicy
                     $temp | Add-Member -MemberType NoteProperty -Name "Teaming Policy - Active Uplink Ports" -Value $pol.ActiveUplinkPort
     
@@ -64,10 +65,7 @@ foreach ($cluster in $clusters)
 
                 }##end foreach teaming policy enumeration
         }##end foreach standard switches
-
     }##end foreach hosts
+}##end foreach cluster
 
-}##end foreach clusters
-
-$vmkernelInfo | Format-List
-
+$vmkernelInfo | Format-Table
