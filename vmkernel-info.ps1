@@ -64,7 +64,6 @@ foreach ($cluster in $clusters)
 
                 }##end foreach teaming policy enumeration
         }##end foreach standard switches
-        $teampolicy
 
     }##end foreach hosts
 
