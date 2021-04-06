@@ -68,4 +68,4 @@ foreach ($cluster in $clusters)
     }##end foreach hosts
 }##end foreach cluster
 
-$vmkernelInfo | Format-Table
+$vmkernelInfo | Sort-Object "Switch Type","Cluster","Host","VirtualSwitch","Teaming Policy - PortGroup Name" -Descending | Format-Table 
